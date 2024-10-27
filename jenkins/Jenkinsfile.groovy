@@ -76,8 +76,8 @@
                              def selectedCredential = credentials.find { it.id == credentialsId }
                              return ['inside2']
                              return selectedCredential.getProperties()
-                             } catch (Exception e) {
-                                return ["Exception occurred: ${e.message}"]
+                             } catch (any) {
+                                return ["Exception occurred while retrieving credentials."]
                              }
                              """
                      ]
