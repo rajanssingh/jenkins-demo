@@ -66,7 +66,23 @@
                              classpath: [],
                              sandbox: true,
                              script: """\
-                             echo " Try to access github token from creds here"                          
+                                import hudson.model.*
+                                import jenkins.model.*
+                                
+                                // Define the credentials ID used in Jenkins
+                                def credentialsId = 'gh-test-token' // Replace with your actual AWS credentials ID
+                                
+                                // Fetch the AWS credentials from Jenkins
+                                def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
+                                    com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl.class,
+                                    jenkins.model.Jenkins.instance,
+                                    null,
+                                    null
+                                ).find { it.id == credentialsId }
+                                
+                                if (creds == null) {
+                                    throw new RuntimeException("credentials not found in Jenkins with ID: ${credentialsId}")}
+                                echo " Try to access github token from creds here"                          
                              } catch (Exception e) {
                                  echo "Exception  - e"
                              }
