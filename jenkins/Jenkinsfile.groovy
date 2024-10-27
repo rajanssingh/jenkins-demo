@@ -66,23 +66,23 @@
                              classpath: [],
                              sandbox: true,
                              script: """\
+                                import jenkins.model.*
                                 import com.cloudbees.plugins.credentials.CredentialsProvider
                                 import com.cloudbees.jenkins.plugins.plainCredentials.impl.StringCredentialsImpl
-                                import jenkins.model.Jenkins
+                                
+                                return['In']
         
-                                // Fetch the credentials from Jenkins by ID
+                                // Get GitHub token from Jenkins credentials
                                 def credentialsId = 'gh-test-token'
-                                def credential = CredentialsProvider.lookupCredentials(
+                                def token = CredentialsProvider.lookupCredentials(
                                     StringCredentialsImpl,
                                     Jenkins.instance,
                                     null,
                                     null
-                                ).find { it.id == credentialsId }
+                                ).find { it.id == credentialsId }?.getSecret().toString()
         
-                                if (credential) {
-                                    return credential
-                                } else {
-                                    return ["Error: Could not access credentials"]
+                                if (!token) {
+                                    return ["Error: Could not access GitHub token"]
                                 }
 
                             """
