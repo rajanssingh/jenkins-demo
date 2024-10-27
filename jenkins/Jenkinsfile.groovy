@@ -166,12 +166,12 @@
      }}
 
  import com.cloudbees.plugins.credentials.CredentialsProvider
- import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials
+ import com.cloudbees.plugins.credentials.common.SecretCredentials
 
  def getCredentialsById(String credentialsId) {
 
      def credentials = CredentialsProvider.lookupCredentials(
-             StandardUsernamePasswordCredentials.class,
+             SecretCredentials.class,
              Jenkins.instance,
              null,
              null
