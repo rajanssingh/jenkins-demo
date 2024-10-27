@@ -65,33 +65,17 @@
                      script: [
                              classpath: [],
                              sandbox: true,
-                             script: '''\
-                                #!/usr/bin/env groovy
+                             script: """\\
                                 import hudson.model.*
                                 import jenkins.model.*
-                                
-                                // Define the credentials ID used in Jenkins
-                                def credentialsId = 'gh-test-token' 
-                                
-                                return ['Inside']
-                                
-                                // Fetch the AWS credentials from Jenkins
-                                def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-                                    com.cloudbees.jenkins.plugins.plainCredentials.impl.StringCredentialsImpl,
-                                    jenkins.model.Jenkins.instance,
-                                    null,
-                                    null)
-                                    
-                                return creds
-                                
-                                //).find { it.id == credentialsId }
-                                
-                                
-                                echo " Try to access github token from creds here"                          
-                             } catch (Exception e) {
-                                 echo "Exception  - e"
-                             }
-                     ''',
+        
+                                try {
+                                    def credentialsId = 'gh-test-token' 
+                                    return ['Inside']
+                                } catch (Exception e) {
+                                    return ['Exception']
+                                }
+                            """
                      ]
              ])
          string(
@@ -123,26 +107,18 @@
          stage('Log the choices selected by the user') {
              steps {
                  script {
-                     sh'''\
-                           #!/usr/bin/env groovy
-                            import hudson.model.*
-                            import jenkins.model.*
-                            
-                            // Define the credentials ID used in Jenkins
-                            def credentialsId = 'gh-test-token' 
-                            
-                            return ['Inside']
-                            
-                            // Fetch the AWS credentials from Jenkins
-                            def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-                                com.cloudbees.jenkins.plugins.plainCredentials.impl.StringCredentialsImpl,
-                                jenkins.model.Jenkins.instance,
-                                null,
-                                null)
-                            
-                            echo "Creds - ${creds}"
-    
-                    '''
+                     try {
+                         def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
+                                 com.cloudbees.jenkins.plugins.plainCredentials.impl.StringCredentialsImpl,
+                                 jenkins.model.Jenkins.instance,
+                                 null,
+                                 null
+                         )
+
+                         echo "Creds - ${creds}"
+                     } catch (Exception e) {
+                         echo "Exception: ${e.message}"
+                     }
 
                      echo "Selected project : ${params.PROJECT_TYPE}"
                      echo "Selected artifact : ${params.ARTIFACT_VERSION}"
