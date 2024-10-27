@@ -66,20 +66,7 @@
                              classpath: [],
                              sandbox: false,
                              script: """\
-                             //try {
-                             import com.cloudbees.plugins.credentials.CredentialsProvider
-                             import com.cloudbees.plugins.credentials.common.StandardCredentials
                              return ['In']
-                               /*
-                             def credentialId = 'gh-test-token'
-                             def credentials = CredentialsProvider.lookupCredentials(StandardCredentials.class,Jenkins.instance,null,null)
-                             return ['inside1']
-                             def selectedCredential = credentials.find { it.id == credentialsId }
-                             return ['inside2']
-                             return selectedCredential.getProperties()
-                             } catch (any) {
-                                return ["Exception occurred while retrieving credentials."]
-                             }*/
                              """
                      ]
              ])
