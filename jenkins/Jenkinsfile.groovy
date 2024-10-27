@@ -67,8 +67,8 @@
                              sandbox: false,
                              script: """\
                              try {
-                             import com.cloudbees.plugins.credentials.CredentialsProvider
-                             import com.cloudbees.plugins.credentials.common.StandardCredentials
+                             //import com.cloudbees.plugins.credentials.CredentialsProvider
+                             //import com.cloudbees.plugins.credentials.common.StandardCredentials
                              return ['In']
                                /*
                              def credentialId = 'gh-test-token'
