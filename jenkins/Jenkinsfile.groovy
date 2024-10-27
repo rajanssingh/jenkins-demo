@@ -64,7 +64,7 @@
                      ],
                      script: [
                              classpath: [],
-                             sandbox: true,
+                             sandbox: false,
                              script: """\
                              try {
                              import com.cloudbees.plugins.credentials.CredentialsProvider
@@ -83,8 +83,7 @@
                              return selectedCredential.getProperties()
                              } catch (Exception e) {
                                 return ["Exception occurred: ${'e.message'}"]
-                            }
-                             
+                             }
                              """
                      ]
              ])
