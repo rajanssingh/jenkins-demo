@@ -70,7 +70,7 @@
                              import com.cloudbees.plugins.credentials.CredentialsProvider
                              import com.cloudbees.plugins.credentials.common.StandardCredentials
                              def credentialId = 'gh-test-token'
-                             def credentials = CredentialsProvider.lookupCredentials(StandardCredentials.class,Jenkins.instance,null,null)
+                             //def credentials = CredentialsProvider.lookupCredentials(StandardCredentials.class,Jenkins.instance,null,null)
                              return ['In']
                              } catch(any){
                                 return ["Exception caused"]
