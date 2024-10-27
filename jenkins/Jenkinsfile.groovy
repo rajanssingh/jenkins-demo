@@ -66,7 +66,7 @@
                              classpath: [],
                              sandbox: true,
                              script: """\
-                                return ['1']
+                              
                                 def fetchCredScript = load 'scripts/gh-token.groovy'
                                 return ['2']  
                                 def credProp = fetchCredScript.fetchCred()
