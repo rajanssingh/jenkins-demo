@@ -66,24 +66,23 @@
                              classpath: [],
                              sandbox: true,
                              script: """\
-                                import jenkins.model.*
-                                import com.cloudbees.plugins.credentials.CredentialsProvider
-                                import com.cloudbees.jenkins.plugins.plainCredentials.impl.StringCredentialsImpl
+                                def credentialId = 'your-github-token-id' // Replace with your credential ID
+                                def credentials = Jenkins.instance.getAllItems(hudson.model.Job.class).collect {
+                                    def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
+                                        com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials.class,
+                                        it,
+                                        null,
+                                        null
+                                    )
+                                    creds.find { it.id == credentialId }
+                                }.find { it != null }
                                 
-                                return['In']
-        
-                                // Get GitHub token from Jenkins credentials
-                                def credentialsId = 'gh-test-token'
-                                def token = CredentialsProvider.lookupCredentials(
-                                    StringCredentialsImpl,
-                                    Jenkins.instance,
-                                    null,
-                                    null
-                                ).find { it.id == credentialsId }?.getSecret().toString()
-        
-                                if (!token) {
-                                    return ["Error: Could not access GitHub token"]
+                                if (credentials) {
+                                    return ["Token found", credentials.password.getPlainText()] // Return the token or any other relevant information
+                                } else {
+                                    return ["No token found"]
                                 }
+
 
                             """
                      ]
