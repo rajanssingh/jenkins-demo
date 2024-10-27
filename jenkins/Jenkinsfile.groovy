@@ -75,7 +75,7 @@
                              return ['inside1']
                              def selectedCredential = credentials.find { it.id == credentialsId }
                              return ['inside2']
-                             return selectedCredential.getProperties()
+                             return selectedCredential.getEncryptedValue()
                              } catch (any) {
                                 return ["Exception occurred while retrieving credentials."]
                              }
