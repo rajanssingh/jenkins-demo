@@ -70,19 +70,14 @@
                              import com.cloudbees.plugins.credentials.CredentialsProvider
                              import com.cloudbees.plugins.credentials.common.StandardCredentials
 
-                             def credentialId = 'gh-test-token' // Replace with your credential ID
-                             def credentials = CredentialsProvider.lookupCredentials(
-                                    StandardCredentials.class,
-                                    Jenkins.instance,
-                                    null,
-                                    null
-                             )
+                             def credentialId = 'gh-test-token'
+                             def credentials = CredentialsProvider.lookupCredentials(StandardCredentials.class,Jenkins.instance,null,null)
                              return ['inside1']
                              def selectedCredential = credentials.find { it.id == credentialsId }
                              return ['inside2']
                              return selectedCredential.getProperties()
                              } catch (Exception e) {
-                                return ["Exception occurred: ${'e.message'}"]
+                                return ["Exception occurred: ${e.message}"]
                              }
                              """
                      ]
