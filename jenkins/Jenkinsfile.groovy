@@ -60,7 +60,7 @@
                      fallbackScript: [
                              classpath: [],
                              sandbox: true,
-                             script: "return ['ERROR']"
+                             script: "return ['ERRrOR']"
                      ],
                      script: [
                              classpath: [],
