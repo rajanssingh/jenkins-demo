@@ -113,6 +113,30 @@
              }
          }
 
+         stage('Debug Credentials Access') {
+             steps {
+                 script {
+                     // Try accessing the token directly in a script block to confirm access
+                     try {
+                         def credentialsId = 'gh-test-token'
+                         def token = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
+                                 com.cloudbees.jenkins.plugins.plainCredentials.impl.StringCredentialsImpl,
+                                 jenkins.model.Jenkins.instance,
+                                 null,
+                                 null
+                         ).find { it.id == credentialsId }?.getSecret().toString()
+
+                         if (!token) {
+                             echo "Error: GitHub token could not be retrieved"
+                         } else {
+                             echo "Token successfully retrieved for testing"
+                         }
+                     } catch (Exception e) {
+                         echo "Exception occurred: ${e.message}"
+                     }
+                 }
+             }
+         }
 
          stage('Log the choices selected by the user') {
              steps {
