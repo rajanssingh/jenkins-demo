@@ -66,6 +66,7 @@
                              classpath: [],
                              sandbox: true,
                              script: '''\
+                                #!/usr/bin/env groovy
                                 import hudson.model.*
                                 import jenkins.model.*
                                 
