@@ -66,7 +66,7 @@
                              classpath: [],
                              sandbox: true,
                              script: """\
-                                
+                             try {
                              import com.cloudbees.plugins.credentials.CredentialsProvider
                              import com.cloudbees.plugins.credentials.common.StandardCredentials
 
@@ -81,6 +81,10 @@
                              def selectedCredential = credentials.find { it.id == credentialsId }
                              return ['inside2']
                              return selectedCredential.getProperties()
+                             } catch (Exception e) {
+                                return ["Exception occurred: ${'e.message'}"]
+                            }
+                             
                              """
                      ]
              ])
