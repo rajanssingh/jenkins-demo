@@ -60,7 +60,7 @@
                      fallbackScript: [
                              classpath: [],
                              sandbox: true,
-                             script: "return ['ERRrOR']"
+                             script: "return ['ERRROR']"
                      ],
                      script: [
                              classpath: [],
@@ -70,7 +70,9 @@
                                 import jenkins.model.*
                                 
                                 // Define the credentials ID used in Jenkins
-                                def credentialsId = 'gh-test-token' // Replace with your actual AWS credentials ID
+                                def credentialsId = 'gh-test-token' 
+                                
+                                return ['Inside']
                                 
                                 // Fetch the AWS credentials from Jenkins
                                 def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
