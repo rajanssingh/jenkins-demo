@@ -66,6 +66,7 @@
                              classpath: [],
                              sandbox: true,
                              script: """\
+                               import jenkins.model.*
                                return ['0']
                                def creds = jenkins.model.Jenkins.instance.getDescriptorByType(scriptler.ScriptlerManagement.class)
                                   .runScript('fetch_cred', 'gh-test-token', true).getResult()
