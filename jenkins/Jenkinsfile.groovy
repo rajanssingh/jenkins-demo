@@ -121,7 +121,7 @@
                          def creds = getCredentialsById(credentialsId)
 
                          // Using the credential values for a GitHub API call
-                         def githubToken = creds.password.getPlainText()
+                         def githubToken = creds
                          echo "Token - ${githubToken}"
                      } catch (Exception e) {
                          echo "Exception occurred: ${e.message}"
