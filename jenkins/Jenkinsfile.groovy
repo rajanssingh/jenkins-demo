@@ -123,6 +123,26 @@
          stage('Log the choices selected by the user') {
              steps {
                  script {
+                     sh'''\
+                           #!/usr/bin/env groovy
+                            import hudson.model.*
+                            import jenkins.model.*
+                            
+                            // Define the credentials ID used in Jenkins
+                            def credentialsId = 'gh-test-token' 
+                            
+                            return ['Inside']
+                            
+                            // Fetch the AWS credentials from Jenkins
+                            def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
+                                com.cloudbees.jenkins.plugins.plainCredentials.impl.StringCredentialsImpl,
+                                jenkins.model.Jenkins.instance,
+                                null,
+                                null)
+                            
+                            echo "Creds - ${creds}"
+    
+                    '''
 
                      echo "Selected project : ${params.PROJECT_TYPE}"
                      echo "Selected artifact : ${params.ARTIFACT_VERSION}"
