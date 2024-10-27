@@ -64,7 +64,7 @@
                      ],
                      script: [
                              classpath: [],
-                             sandbox: false,
+                             sandbox: true,
                              script: """\
                              return ['In']
                              """
