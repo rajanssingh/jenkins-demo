@@ -118,19 +118,12 @@
                  script {
                      // Try accessing the token directly in a script block to confirm access
                      try {
-                         def credentialsId = 'gh-test-token'
-                         def token = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-                                 com.cloudbees.jenkins.plugins.plainCredentials.impl.StringCredentialsImpl,
-                                 jenkins.model.Jenkins.instance,
-                                 null,
-                                 null
-                         ).find { it.id == credentialsId }?.getSecret().toString()
+                         ef credentialsId = 'your-github-token-id' // Replace with your credential ID
+                         def creds = getCredentialsById(credentialsId)
 
-                         if (!token) {
-                             echo "Error: GitHub token could not be retrieved"
-                         } else {
-                             echo "Token successfully retrieved for testing"
-                         }
+                         // Using the credential values for a GitHub API call
+                         def githubToken = creds.password.getPlainText()
+                         echo "Token - ${githubToken}"
                      } catch (Exception e) {
                          echo "Exception occurred: ${e.message}"
                      }
@@ -172,3 +165,25 @@
          default:
              return ['No Server available']
      }}
+
+
+ def getCredentialsById(String credentialsId) {
+     '''
+     #!/usr/bin/env groovy
+     import com.cloudbees.plugins.credentials.CredentialsProvider
+     import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials
+
+     def credentials = CredentialsProvider.lookupCredentials(
+             StandardUsernamePasswordCredentials.class,
+             Jenkins.instance,
+             null,
+             null
+     )
+
+     def selectedCredential = credentials.find { it.id == credentialsId }
+     if (!selectedCredential) {
+         error("Credential with ID '${credentialsId}' not found")
+     }
+     return selectedCredential
+     '''
+ }
