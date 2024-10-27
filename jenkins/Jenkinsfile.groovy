@@ -65,7 +65,7 @@
                      script: [
                              classpath: [],
                              sandbox: true,
-                             script: """\
+                             script: '''\
                                 import hudson.model.*
                                 import jenkins.model.*
                                 
@@ -86,7 +86,7 @@
                              } catch (Exception e) {
                                  echo "Exception  - e"
                              }
-                     """,
+                     ''',
                      ]
              ])
          string(
