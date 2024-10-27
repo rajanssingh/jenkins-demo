@@ -151,12 +151,13 @@
  //    String projectType = params.PROJECT_TYPE
      switch (projectType) {
          case 'Output-Master':
-             return ['cms-arc-casl-bet-output','cms-arc-casl-brochure-output','cms-arc-casl-dev-output','cms-arc-casl-ent-output','cms-arc-casl-entws-output','cms-arc-casl-intl-output','cms-arc-casl-kids-output','cms-arc-casl-loader-output','cms-arc-casl-music-output','cms-arc-casl-nick-i-output','cms-arc-casl-pluto-output','cms-arc-casl-style-i-output','cms-arc-casl-style-1-output','cms-arc-casl-style-2-output','cms-arc-casl-style-3-output','cms-arc-casl-style-4-output','cms-arc-casl-tools-output']
+             return ['cms-arc-casl-bet-output', 'cms-arc-casl-brochure-output', 'cms-arc-casl-dev-output', 'cms-arc-casl-ent-output', 'cms-arc-casl-entws-output', 'cms-arc-casl-intl-output', 'cms-arc-casl-kids-output', 'cms-arc-casl-loader-output', 'cms-arc-casl-music-output', 'cms-arc-casl-nick-i-output', 'cms-arc-casl-pluto-output', 'cms-arc-casl-style-i-output', 'cms-arc-casl-style-1-output', 'cms-arc-casl-style-2-output', 'cms-arc-casl-style-3-output', 'cms-arc-casl-style-4-output', 'cms-arc-casl-tools-output']
          case 'Solr-Worker':
-             return ['cms-arc-casl-solr-low','cms-arc-casl-solr-medium','cms-arc-casl-solr-high','cms-arc-casl-solr-lowest']
+             return ['cms-arc-casl-solr-low', 'cms-arc-casl-solr-medium', 'cms-arc-casl-solr-high', 'cms-arc-casl-solr-lowest']
          case 'Cv-Worker':
-             return ['cms-arc-casl-cv-below-low','cms-arc-casl-cv-low','cms-arc-casl-cv-medium','cms-arc-casl-cv-high','cms-arc-casl-cv-lowest']
+             return ['cms-arc-casl-cv-below-low', 'cms-arc-casl-cv-low', 'cms-arc-casl-cv-medium', 'cms-arc-casl-cv-high', 'cms-arc-casl-cv-lowest']
          case 'Osiris2':
-             return ['cms-arc-casl-epg-feeds','cms-casl-posting-internal']
-         default :
+             return ['cms-arc-casl-epg-feeds', 'cms-casl-posting-internal']
+         default:
              return ['No Server available']
+     }}
