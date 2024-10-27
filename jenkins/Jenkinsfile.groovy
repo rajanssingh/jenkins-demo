@@ -65,16 +65,26 @@
                      script: [
                              classpath: [],
                              sandbox: true,
-                             script: """\\
-                                import hudson.model.*
-                                import jenkins.model.*
+                             script: """\
+                                import com.cloudbees.plugins.credentials.CredentialsProvider
+                                import com.cloudbees.jenkins.plugins.plainCredentials.impl.StringCredentialsImpl
+                                import jenkins.model.Jenkins
         
-                                try {
-                                    def credentialsId = 'gh-test-token' 
-                                    return ['Inside']
-                                } catch (Exception e) {
-                                    return ['Exception']
+                                // Fetch the credentials from Jenkins by ID
+                                def credentialsId = 'gh-test-token'
+                                def credential = CredentialsProvider.lookupCredentials(
+                                    StringCredentialsImpl,
+                                    Jenkins.instance,
+                                    null,
+                                    null
+                                ).find { it.id == credentialsId }
+        
+                                if (credential) {
+                                    return credential
+                                } else {
+                                    return ["Error: Could not access credentials"]
                                 }
+
                             """
                      ]
              ])
