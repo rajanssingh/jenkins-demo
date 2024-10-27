@@ -165,12 +165,10 @@
              return ['No Server available']
      }}
 
+ import com.cloudbees.plugins.credentials.CredentialsProvider
+ import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials
 
  def getCredentialsById(String credentialsId) {
-     '''
-     #!/usr/bin/env groovy
-     import com.cloudbees.plugins.credentials.CredentialsProvider
-     import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials
 
      def credentials = CredentialsProvider.lookupCredentials(
              StandardUsernamePasswordCredentials.class,
@@ -183,6 +181,4 @@
      if (!selectedCredential) {
          error("Credential with ID '${credentialsId}' not found")
      }
-     return selectedCredential
-     '''
- }
+     return selectedCredential}
