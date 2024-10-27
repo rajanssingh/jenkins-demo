@@ -67,7 +67,7 @@
                              sandbox: true,
                              script: """\
                              echo " Try to access github token from creds here"
-                             echo "${GH_TEST_TOKEN}"
+//                             echo "${GH_TEST_TOKEN}"
                              } catch (Exception e) {
                                  echo "Failed to get latest tag: ${e.getMessage()}"
                              }
@@ -119,31 +119,7 @@
              }
          }
 
- /*        stage('Verify if the artifact version is available  - TODO') {
-             // TODO Verify if the artifact version is available in nexus
-             // TODO Fetch server list from github vss-cms api
-             steps {
-                 script {
-                     // Fetch the latest tag from the repo
-                     try {
-                         def response = sh(
-                                 script: '''
-                                   curl -s -H "Authorization: token $GH_TOKEN_TEST" \
-                                   https://api.github.com/repos/viacomcbs/cms-arc-casl-osiris2/tags
-                                 ''',
-                                 returnStdout: true
-                         ).trim()
-                         //  echo "Response - \n ${response}"
-                         // Parse JSON response to get the latest tag
-                         ARTIFACT_VERSION_TO_DEPLOY = readJSON(text: response)[0]?.name
-                         echo "Latest version is : ${ARTIFACT_VERSION_TO_DEPLOY}"
 
-                     } catch (Exception e) {
-                         echo "Failed to get latest tag: ${e.getMessage()}"
-                     }
-                 }
-             }
-         }*/
      }
  }
 
