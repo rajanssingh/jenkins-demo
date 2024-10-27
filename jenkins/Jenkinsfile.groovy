@@ -67,11 +67,16 @@
                              sandbox: true,
                              script: """\
                                import jenkins.model.*
-                               
-                               def creds = jenkins.model.Jenkins.instance.getDescriptorByType(scriptler.ScriptlerManagement.class)
-                                  .runScript('fetch_cred', 'gh-test-token', true).getResult()
-                               return ['1']
-                               return creds
+                                import com.cloudbees.plugins.credentials.CredentialsProvider
+                                import com.cloudbees.plugins.credentials.common.StandardCredentials
+
+                               def creds = CredentialsProvider.lookupCredentials(
+                                StandardCredentials.class,
+                                Jenkins.instance,
+                                null,
+                                null
+                                )
+                              return creds
                              """
                      ]
              ])
