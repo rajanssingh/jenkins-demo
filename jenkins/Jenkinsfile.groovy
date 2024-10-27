@@ -60,28 +60,29 @@
                      fallbackScript: [
                              classpath: [],
                              sandbox: true,
-                             script: "return ['ERRROR']"
+                             script: "return ['ERROR']"
                      ],
                      script: [
                              classpath: [],
                              sandbox: true,
                              script: """\
-                                def credentialId = 'your-github-token-id' // Replace with your credential ID
-                                def credentials = Jenkins.instance.getAllItems(hudson.model.Job.class).collect {
-                                    def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-                                        com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials.class,
-                                        it,
-                                        null,
-                                        null
-                                    )
-                                    creds.find { it.id == credentialId }
-                                }.find { it != null }
                                 
-                                if (credentials) {
-                                    return ["Token found", credentials.password.getPlainText()] // Return the token or any other relevant information
-                                } else {
-                                    return ["No token found"]
-                                }
+                                import com.cloudbees.plugins.credentials.CredentialsProvider
+                                import com.cloudbees.plugins.credentials.common.StandardCredentials
+
+                                def credentialId = 'gh-test-token' // Replace with your credential ID
+                                def credentials = CredentialsProvider.lookupCredentials(
+                                         StandardCredentials.class,
+                                         Jenkins.instance,
+                                         null,
+                                         null
+                                 )
+                            
+                                 def selectedCredential = credentials.find { it.id == credentialsId }
+                                 if (!selectedCredential) {
+                                     error("Credential with ID '${credentialsId}' not found")
+                                 }
+                                 return selectedCredential.getProperties()
 
 
                             """
