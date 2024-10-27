@@ -67,23 +67,21 @@
                              sandbox: true,
                              script: """\
                                 
-                                import com.cloudbees.plugins.credentials.CredentialsProvider
-                                import com.cloudbees.plugins.credentials.common.StandardCredentials
+                             import com.cloudbees.plugins.credentials.CredentialsProvider
+                             import com.cloudbees.plugins.credentials.common.StandardCredentials
 
-                                def credentialId = 'gh-test-token' // Replace with your credential ID
-                                def credentials = CredentialsProvider.lookupCredentials(
-                                         StandardCredentials.class,
-                                         Jenkins.instance,
-                                         null,
-                                         null
-                                 )
-                            
-                                 def selectedCredential = credentials.find { it.id == credentialsId }
-                                 
-                                 return selectedCredential.getProperties()
-
-
-                            """
+                             def credentialId = 'gh-test-token' // Replace with your credential ID
+                             def credentials = CredentialsProvider.lookupCredentials(
+                                    StandardCredentials.class,
+                                    Jenkins.instance,
+                                    null,
+                                    null
+                             )
+                             return ['inside1']
+                             def selectedCredential = credentials.find { it.id == credentialsId }
+                             return ['inside2']
+                             return selectedCredential.getProperties()
+                             """
                      ]
              ])
          string(
