@@ -10,7 +10,7 @@
          // Select project type
          choice(
                  name: 'PROJECT_TYPE',
-                 choices: ['Osiris2', 'Output-Master', 'Cv-Worker', 'Solr-Worker'],
+                 choices: ['P1', 'P2','P3', 'P4'],
                  description: 'Select the CASL project to deploy'
          )
          // TODO List of servers to update dynamically
@@ -34,14 +34,14 @@
                      sandbox: true,
                      script: """\
                              switch (PROJECT_TYPE) {
-                                 case 'Output-Master':
-                                     return ["cms-arc-casl-bet-output", "cms-arc-casl-brochure-output", "cms-arc-casl-dev-output", "cms-arc-casl-ent-output", "cms-arc-casl-entws-output", "cms-arc-casl-intl-output", "cms-arc-casl-kids-output", "cms-arc-casl-loader-output", "cms-arc-casl-music-output", "cms-arc-casl-nick-i-output", "cms-arc-casl-pluto-output", "cms-arc-casl-style-i-output", "cms-arc-casl-style-1-output", "cms-arc-casl-style-2-output", "cms-arc-casl-style-3-output", "cms-arc-casl-style-4-output", "cms-arc-casl-tools-output"]
-                                 case 'Solr-Worker':
-                                     return ["cms-arc-casl-solr-low", "cms-arc-casl-solr-medium", "cms-arc-casl-solr-high", "cms-arc-casl-solr-lowest"]
-                                 case 'Cv-Worker':
-                                     return ["cms-arc-casl-cv-below-low", "cms-arc-casl-cv-low", "cms-arc-casl-cv-medium", "cms-arc-casl-cv-high", "cms-arc-casl-cv-lowest"]
-                                 case 'Osiris2':
-                                     return ["cms-casl-posting-internal","cms-arc-casl-posting-001","cms-arc-casl-posting-002","cms-arc-casl-arcmig","cms-arc-casl-worker","cms-arc-casl-publish","cms-arc-casl-neutron-ent","cms-arc-casl-neutron-ent-intl","cms-arc-casl-neutron-intl","cms-arc-casl-neutron-kids","cms-arc-casl-neutron-kids-i","cms-arc-casl-neutron-mtv-intl","cms-arc-casl-neutron-music","cms-arc-casl-neutron-music-i","cms-arc-casl-neutron-nick-intl","cms-arc-casl-feeds","cms-arc-casl-epg-feeds","cms-arc-casl-epg-neutron","cms-arc-casl-epg-posting","cms-arc-casl-data-srvc"]
+                                 case 'P1':
+                                     return ["s1","s2","s3"]
+                                 case 'P2':
+                                     return ["s4","s5","s6"]
+                                 case 'P3':
+                                     return ["s7","s8","s9"]
+                                 case 'P4':
+                                     return ["s10","s11","s12"]
                                  default :
                                      return []
                              }
@@ -66,26 +66,8 @@
                              classpath: [],
                              sandbox: true,
                              script: """\
-                             def repo_name = ''
-                             switch (PROJECT_TYPE) {
-                                 case 'Output-Master':
-                                     repo_name='cms-arc-casl-output-master'
-                                 case 'Solr-Worker':
-                                     repo_name='cms-arc-casl-solr-sync'
-                                 case 'Cv-Worker':
-                                     repo_name='cms-arc-casl-content-visibility'
-                                 case 'Osiris2':
-                                     repo_name='cms-arc-casl-osiris2'
-                                 default :
-                                     return []
-                             }
-                             try {
-                                 def command = 'curl -s -H \\"Authorization: token $GH_TOKEN_TEST\\" https://api.github.com/repos/viacomcbs/repo_name/tags'
-                                 def response = command.execute()
-
-                                 // Parse JSON response to get the latest tag
-                                 artifact_tags = readJSON(text: response)[0]?.name
-                                 return ['artifact_tags']
+                             echo " Try to access github token from creds here"
+                             echo "${GH_TEST_TOKEN}"
                              } catch (Exception e) {
                                  echo "Failed to get latest tag: ${e.getMessage()}"
                              }
