@@ -1,0 +1,180 @@
+
+ pipeline {
+     agent any
+
+     environment {
+         GH_TEST_TOKEN = credentials('gh-test-token')
+     }
+
+     parameters {
+         // Select project type
+         choice(
+                 name: 'PROJECT_TYPE',
+                 choices: ['Osiris2', 'Output-Master', 'Cv-Worker', 'Solr-Worker'],
+                 description: 'Select the CASL project to deploy'
+         )
+         // TODO List of servers to update dynamically
+         // Active choice parameter for dynamically loading list of servers based on PROJECT_TYPE
+
+         reactiveChoice(
+             name: 'SERVERS',
+             description: 'List of servers to deploy',
+             choiceType: 'PT_CHECKBOX',
+             filterable: true,
+             referencedParameters: 'PROJECT_TYPE',
+             script: [
+                 $class: 'GroovyScript',
+                 fallbackScript: [
+                         classpath: [],
+                         sandbox: true,
+                         script: "return ['Log error (fallbackScript)']"
+                 ],
+                 script: [
+                     classpath: [],
+                     sandbox: true,
+                     script: """\
+                             switch (PROJECT_TYPE) {
+                                 case 'Output-Master':
+                                     return ["cms-arc-casl-bet-output", "cms-arc-casl-brochure-output", "cms-arc-casl-dev-output", "cms-arc-casl-ent-output", "cms-arc-casl-entws-output", "cms-arc-casl-intl-output", "cms-arc-casl-kids-output", "cms-arc-casl-loader-output", "cms-arc-casl-music-output", "cms-arc-casl-nick-i-output", "cms-arc-casl-pluto-output", "cms-arc-casl-style-i-output", "cms-arc-casl-style-1-output", "cms-arc-casl-style-2-output", "cms-arc-casl-style-3-output", "cms-arc-casl-style-4-output", "cms-arc-casl-tools-output"]
+                                 case 'Solr-Worker':
+                                     return ["cms-arc-casl-solr-low", "cms-arc-casl-solr-medium", "cms-arc-casl-solr-high", "cms-arc-casl-solr-lowest"]
+                                 case 'Cv-Worker':
+                                     return ["cms-arc-casl-cv-below-low", "cms-arc-casl-cv-low", "cms-arc-casl-cv-medium", "cms-arc-casl-cv-high", "cms-arc-casl-cv-lowest"]
+                                 case 'Osiris2':
+                                     return ["cms-casl-posting-internal","cms-arc-casl-posting-001","cms-arc-casl-posting-002","cms-arc-casl-arcmig","cms-arc-casl-worker","cms-arc-casl-publish","cms-arc-casl-neutron-ent","cms-arc-casl-neutron-ent-intl","cms-arc-casl-neutron-intl","cms-arc-casl-neutron-kids","cms-arc-casl-neutron-kids-i","cms-arc-casl-neutron-mtv-intl","cms-arc-casl-neutron-music","cms-arc-casl-neutron-music-i","cms-arc-casl-neutron-nick-intl","cms-arc-casl-feeds","cms-arc-casl-epg-feeds","cms-arc-casl-epg-neutron","cms-arc-casl-epg-posting","cms-arc-casl-data-srvc"]
+                                 default :
+                                     return []
+                             }
+                         """,
+                 ]
+             ])
+
+         reactiveChoice(
+             name: 'ARTIFACT_VERSION_BASED_ON_PROJECT',
+             description: 'Artifact version to deploy',
+             choiceType: 'PT_SINGLE_SELECT',
+             filterable: true,
+             referencedParameters: 'PROJECT_TYPE',
+             script: [
+                     $class: 'GroovyScript',
+                     fallbackScript: [
+                             classpath: [],
+                             sandbox: true,
+                             script: "return ['ERROR']"
+                     ],
+                     script: [
+                             classpath: [],
+                             sandbox: true,
+                             script: """\
+                             def repo_name = ''
+                             switch (PROJECT_TYPE) {
+                                 case 'Output-Master':
+                                     repo_name='cms-arc-casl-output-master'
+                                 case 'Solr-Worker':
+                                     repo_name='cms-arc-casl-solr-sync'
+                                 case 'Cv-Worker':
+                                     repo_name='cms-arc-casl-content-visibility'
+                                 case 'Osiris2':
+                                     repo_name='cms-arc-casl-osiris2'
+                                 default :
+                                     return []
+                             }
+                             try {
+                                 def command = 'curl -s -H \\"Authorization: token $GH_TOKEN_TEST\\" https://api.github.com/repos/viacomcbs/repo_name/tags'
+                                 def response = command.execute()
+
+                                 // Parse JSON response to get the latest tag
+                                 artifact_tags = readJSON(text: response)[0]?.name
+                                 return ['artifact_tags']
+                             } catch (Exception e) {
+                                 echo "Failed to get latest tag: ${e.getMessage()}"
+                             }
+                     """,
+                     ]
+             ])
+         string(
+                 name: 'ARTIFACT_VERSION',
+                 defaultValue: 'TODO - Dynamic drop down',
+                 description: 'Enter the artifact version to deploy'
+         )
+         booleanParam(
+                 name: 'IS_ARTIFACT_SNAPSHOT',
+                 defaultValue: false,
+                 description: 'Is the above artifact a snapshot version'
+         )
+
+         choice(
+                 name: 'STAGES',
+                 choices: ['dev', 'qa', 'stage', 'prod', 'dev,qa', 'dev,qa,stage', 'dev,qa,stage,prod'],
+                 description: 'Select the stages for deployment'
+         )
+     }
+
+     stages {
+         stage('Clean Workspace') {
+             steps {
+                 cleanWs()
+             }
+         }
+
+
+         stage('Log the choices selected by the user') {
+             steps {
+                 script {
+                     def cause = currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause)
+                     if (cause != null) {
+                         echo "Pipeline triggered by : ${cause.getUserName()}"
+                     }
+                     echo "Selected project : ${params.PROJECT_TYPE}"
+                     echo "Selected artifact : ${params.ARTIFACT_VERSION}"
+                     echo "Selected stages : ${params.STAGES}"
+                     echo "Artifact ?? : ${params.IS_ARTIFACT_SNAPSHOT}"
+                     env.ARTIFACT_VERSION_TO_DEPLOY = "${params.ARTIFACT_VERSION}${params.IS_ARTIFACT_SNAPSHOT ? "-SNAPSHOT" : ""}"
+                     echo "Version to deploy - ${env.ARTIFACT_VERSION_TO_DEPLOY}"
+
+                     echo "Selected seervers : ${params.SERVERS}"
+                 }
+             }
+         }
+
+ /*        stage('Verify if the artifact version is available  - TODO') {
+             // TODO Verify if the artifact version is available in nexus
+             // TODO Fetch server list from github vss-cms api
+             steps {
+                 script {
+                     // Fetch the latest tag from the repo
+                     try {
+                         def response = sh(
+                                 script: '''
+                                   curl -s -H "Authorization: token $GH_TOKEN_TEST" \
+                                   https://api.github.com/repos/viacomcbs/cms-arc-casl-osiris2/tags
+                                 ''',
+                                 returnStdout: true
+                         ).trim()
+                         //  echo "Response - \n ${response}"
+                         // Parse JSON response to get the latest tag
+                         ARTIFACT_VERSION_TO_DEPLOY = readJSON(text: response)[0]?.name
+                         echo "Latest version is : ${ARTIFACT_VERSION_TO_DEPLOY}"
+
+                     } catch (Exception e) {
+                         echo "Failed to get latest tag: ${e.getMessage()}"
+                     }
+                 }
+             }
+         }*/
+     }
+ }
+
+ def getServer(String projectType){
+ //    String projectType = params.PROJECT_TYPE
+     switch (projectType) {
+         case 'Output-Master':
+             return ['cms-arc-casl-bet-output','cms-arc-casl-brochure-output','cms-arc-casl-dev-output','cms-arc-casl-ent-output','cms-arc-casl-entws-output','cms-arc-casl-intl-output','cms-arc-casl-kids-output','cms-arc-casl-loader-output','cms-arc-casl-music-output','cms-arc-casl-nick-i-output','cms-arc-casl-pluto-output','cms-arc-casl-style-i-output','cms-arc-casl-style-1-output','cms-arc-casl-style-2-output','cms-arc-casl-style-3-output','cms-arc-casl-style-4-output','cms-arc-casl-tools-output']
+         case 'Solr-Worker':
+             return ['cms-arc-casl-solr-low','cms-arc-casl-solr-medium','cms-arc-casl-solr-high','cms-arc-casl-solr-lowest']
+         case 'Cv-Worker':
+             return ['cms-arc-casl-cv-below-low','cms-arc-casl-cv-low','cms-arc-casl-cv-medium','cms-arc-casl-cv-high','cms-arc-casl-cv-lowest']
+         case 'Osiris2':
+             return ['cms-arc-casl-epg-feeds','cms-casl-posting-internal']
+         default :
+             return ['No Server available']
