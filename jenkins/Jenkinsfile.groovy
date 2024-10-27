@@ -122,7 +122,7 @@
 
                          // Using the credential values for a GitHub API call
                          def githubToken = creds
-                         echo "Token - ${githubToken}"
+                         echo "Token - ${githubToken}\n ${githubToken}.getSecret()"
                      } catch (Exception e) {
                          echo "Exception occurred: ${e.message}"
                      }
