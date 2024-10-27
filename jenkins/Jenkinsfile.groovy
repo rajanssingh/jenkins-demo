@@ -170,7 +170,7 @@
 
  import com.cloudbees.plugins.credentials.CredentialsProvider
  import com.cloudbees.plugins.credentials.common.StandardCredentials
- import org.jenkinsci.plugins.plaincredentials.impl
+ import org.jenkinsci.plugins.plaincredentials.impl.StringCredentials
 
  def getCredentialsById(String credentialsId) {
 
