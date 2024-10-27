@@ -66,12 +66,9 @@
                              classpath: [],
                              sandbox: true,
                              script: """\
-                             import com.cloudbees.plugins.credentials.CredentialsProvider
-                             import com.cloudbees.plugins.credentials.common.StandardCredentials
-                             return ['${GH_TEST_TOKEN}']
-                             def credentialId = 'gh-test-token'
-                             //def credentials = CredentialsProvider.lookupCredentials(StandardCredentials.class,Jenkins.instance,null,null)
-                             return ['In']
+                                def fetchCredScript = load 'scripts/gh-token.groovy'
+                                def credProp = fetchCredScript.fetchCred()
+                                return credProp ?: ['No creds available']
                              """
                      ]
              ])
