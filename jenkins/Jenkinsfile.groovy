@@ -79,9 +79,7 @@
                                  )
                             
                                  def selectedCredential = credentials.find { it.id == credentialsId }
-                                 if (!selectedCredential) {
-                                     error("Credential with ID '${credentialsId}' not found")
-                                 }
+                                 
                                  return selectedCredential.getProperties()
 
 
