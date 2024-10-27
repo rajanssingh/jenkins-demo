@@ -102,10 +102,7 @@
          stage('Log the choices selected by the user') {
              steps {
                  script {
-                     def cause = currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause)
-                     if (cause != null) {
-                         echo "Pipeline triggered by : ${cause.getUserName()}"
-                     }
+
                      echo "Selected project : ${params.PROJECT_TYPE}"
                      echo "Selected artifact : ${params.ARTIFACT_VERSION}"
                      echo "Selected stages : ${params.STAGES}"
