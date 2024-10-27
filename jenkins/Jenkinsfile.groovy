@@ -66,6 +66,8 @@
                              classpath: [],
                              sandbox: true,
                              script: """\
+                             import com.cloudbees.plugins.credentials.CredentialsProvider
+                             import com.cloudbees.plugins.credentials.common.StandardCredentials
                              return ['In']
                              """
                      ]
