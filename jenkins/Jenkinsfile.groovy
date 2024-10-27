@@ -66,8 +66,7 @@
                              classpath: [],
                              sandbox: true,
                              script: """\
-                             echo " Try to access github token from creds here"
-//                             echo "${GH_TEST_TOKEN}"
+                             echo " Try to access github token from creds here"                          
                              } catch (Exception e) {
                                  echo "Failed to get latest tag: ${e.getMessage()}"
                              }
