@@ -76,7 +76,7 @@
                                 null,
                                 null
                                 )
-                                def token = credentials.find { it.id == 'gh-test-token' }
+                                def token = creds.find { it.id == 'gh-test-token' }
                                 return ['1', token]
                              """
                      ]
