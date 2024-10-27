@@ -68,7 +68,7 @@
                              script: """\
                              echo " Try to access github token from creds here"                          
                              } catch (Exception e) {
-                                 echo "Failed to get latest tag: ${e.getMessage()}"
+                                 echo "Exception  - e"
                              }
                      """,
                      ]
