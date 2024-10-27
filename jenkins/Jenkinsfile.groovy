@@ -117,18 +117,6 @@
          stage('Log the choices selected by the user') {
              steps {
                  script {
-                     try {
-                         def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-                                 com.cloudbees.jenkins.plugins.plainCredentials.impl.StringCredentialsImpl,
-                                 jenkins.model.Jenkins.instance,
-                                 null,
-                                 null
-                         )
-
-                         echo "Creds - ${creds}"
-                     } catch (Exception e) {
-                         echo "Exception: ${e.message}"
-                     }
 
                      echo "Selected project : ${params.PROJECT_TYPE}"
                      echo "Selected artifact : ${params.ARTIFACT_VERSION}"
