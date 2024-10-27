@@ -74,14 +74,16 @@
                                 
                                 // Fetch the AWS credentials from Jenkins
                                 def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-                                    com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl.class,
+                                    com.cloudbees.jenkins.plugins.plainCredentials.impl.StringCredentialsImpl,
                                     jenkins.model.Jenkins.instance,
                                     null,
-                                    null
-                                ).find { it.id == credentialsId }
+                                    null)
+                                    
+                                return creds
                                 
-                                if (creds == null) {
-                                    throw new RuntimeException("credentials not found in Jenkins with ID: ${credentialsId}")}
+                                //).find { it.id == credentialsId }
+                                
+                                
                                 echo " Try to access github token from creds here"                          
                              } catch (Exception e) {
                                  echo "Exception  - e"
