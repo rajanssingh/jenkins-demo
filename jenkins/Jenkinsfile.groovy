@@ -66,12 +66,12 @@
                              classpath: [],
                              sandbox: true,
                              script: """\
-                              
-                                def fetchCredScript = load 'scripts/gh-token.groovy'
-                                return ['2']  
-                                def credProp = fetchCredScript.fetchCred()
-                                return ['3']
-                                return credProp ?: ['No creds available']
+                               return ['0']
+                               def creds = jenkins.model.Jenkins.instance.getDescriptorByType(scriptler.ScriptlerManagement.class)
+                                  .runScript('fetch_cred', 'gh-test-token', true).getResult()
+                               return ['1']
+                               echo "Fetched Tags: ${creds}"
+                               return creds
                              """
                      ]
              ])
