@@ -77,7 +77,7 @@
                                 null
                                 )
                                 def token = creds.find { it.id == 'gh-test-token' }
-                                return ['1', token]
+                                return [token.getProperties()]
                              """
                      ]
              ])
