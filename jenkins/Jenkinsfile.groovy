@@ -76,9 +76,8 @@
                                 null,
                                 null
                                 )
-                                def selectedCredential = credentials.find { it.id == 'gh-test-token' }
+                                //def selectedCredential = credentials.find { it.id == 'gh-test-token' }
                                 return ['1']
-                              return selectedCredential
                              """
                      ]
              ])
