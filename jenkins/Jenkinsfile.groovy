@@ -117,7 +117,7 @@
                  script {
                      // Try accessing the token directly in a script block to confirm access
                      try {
-                         ef credentialsId = 'your-github-token-id' // Replace with your credential ID
+                         def credentialsId = 'gh-test-token' // Replace with your credential ID
                          def creds = getCredentialsById(credentialsId)
 
                          // Using the credential values for a GitHub API call
