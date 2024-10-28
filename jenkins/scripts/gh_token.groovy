@@ -8,8 +8,7 @@ def fetchCred() {
             StandardCredentials.class,
             Jenkins.instance,
             null,
-            null
-    )
+            null    )
 
     def selectedCredential = credentials.find { it.id == credentialsId }
     if (!selectedCredential) {

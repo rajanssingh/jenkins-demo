@@ -67,9 +67,18 @@
                              sandbox: true,
                              script: """\
                                import jenkins.model.*
-                                import com.cloudbees.plugins.credentials.CredentialsProvider
-                                import com.cloudbees.plugins.credentials.common.StandardCredentials
+                               import com.cloudbees.plugins.credentials.CredentialsProvider
+                               import com.cloudbees.plugins.credentials.common.StandardCredentials
+                              
+                               def token = Jenkins.instance.getScriptler().runScript('script', [:])
+                               if(token){
+                                return [token]
+                               }
+                               else{
+                               return ['No token']
+                               }
 
+                               /*
                                def creds = CredentialsProvider.lookupCredentials(
                                 StandardCredentials.class,
                                 Jenkins.instance,
@@ -78,7 +87,7 @@
                                 )
                                 def token = creds.find { it.id == 'gh-test-token' }
                                 def secret = token.getSecret()
-                                return [token.getProperties()]
+                                return [token.getProperties()]*/
                              """
                      ]
              ])
