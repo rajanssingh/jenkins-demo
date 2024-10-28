@@ -71,12 +71,7 @@
                                import com.cloudbees.plugins.credentials.common.StandardCredentials
                               
                                def token = Jenkins.instance.getScriptler().runScript('script', [:])
-                               if(token){
-                                return [token]
-                               }
-                               else{
-                               return ['No token']
-                               }
+                               return [token]
 
                                /*
                                def creds = CredentialsProvider.lookupCredentials(
