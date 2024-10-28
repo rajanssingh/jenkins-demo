@@ -69,9 +69,9 @@
                                import jenkins.model.*
                                import com.cloudbees.plugins.credentials.CredentialsProvider
                                import com.cloudbees.plugins.credentials.common.StandardCredentials
-                               return ['1']
-                               def token = Jenkins.instance.getScriptler().runScript('script')
-                               return [token]
+                               
+                               def token = Jenkins.instance.getScriptler().runScript('script',[:])
+                               return token
 
                                /*
                                def creds = CredentialsProvider.lookupCredentials(
