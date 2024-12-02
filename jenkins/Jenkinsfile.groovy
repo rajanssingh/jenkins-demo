@@ -66,12 +66,21 @@
                              classpath: [],
                              sandbox: true,
                              script: """\
-                             echo " Try to access github token from creds here"
-                             echo "${GH_TEST_TOKEN}"
-                             } catch (Exception e) {
-                                 echo "Failed to get latest tag: ${e.getMessage()}"
-                             }
-                     """,
+                               import jenkins.model.*
+                               import com.cloudbees.plugins.credentials.CredentialsProvider
+                               import com.cloudbees.plugins.credentials.common.StandardCredentials
+
+                               
+                               def creds = CredentialsProvider.lookupCredentials(
+                                StandardCredentials.class,
+                                Jenkins.instance,
+                                null,
+                                null
+                                )
+                                def token = creds.find { it.id == 'gh-test-token' }
+                                def secret = token.getSecret()
+                                return [token.getProperties()]
+                             """
                      ]
              ])
          string(
@@ -99,14 +108,31 @@
              }
          }
 
+         stage('Debug Credentials Access') {
+             steps {
+                 script {
+                     // Try accessing the token directly in a script block to confirm access
+                     try {
+                         def credentialsId = 'gh-test-token' // Replace with your credential ID
+                         def creds = getCredentialsById(credentialsId)
+
+                         // Using the credential values for a GitHub API call
+                         def githubToken = creds
+                         def props = creds.getProperties()
+                         // def secret = creds.getSecret()
+                         echo "Token - ${githubToken}\n"
+                         echo "Properties - ${props}\n"
+                     } catch (Exception e) {
+                         echo "Exception occurred: ${e.message}"
+                     }
+                 }
+             }
+         }
 
          stage('Log the choices selected by the user') {
              steps {
                  script {
-                     def cause = currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause)
-                     if (cause != null) {
-                         echo "Pipeline triggered by : ${cause.getUserName()}"
-                     }
+
                      echo "Selected project : ${params.PROJECT_TYPE}"
                      echo "Selected artifact : ${params.ARTIFACT_VERSION}"
                      echo "Selected stages : ${params.STAGES}"
@@ -119,31 +145,7 @@
              }
          }
 
- /*        stage('Verify if the artifact version is available  - TODO') {
-             // TODO Verify if the artifact version is available in nexus
-             // TODO Fetch server list from github vss-cms api
-             steps {
-                 script {
-                     // Fetch the latest tag from the repo
-                     try {
-                         def response = sh(
-                                 script: '''
-                                   curl -s -H "Authorization: token $GH_TOKEN_TEST" \
-                                   https://api.github.com/repos/viacomcbs/cms-arc-casl-osiris2/tags
-                                 ''',
-                                 returnStdout: true
-                         ).trim()
-                         //  echo "Response - \n ${response}"
-                         // Parse JSON response to get the latest tag
-                         ARTIFACT_VERSION_TO_DEPLOY = readJSON(text: response)[0]?.name
-                         echo "Latest version is : ${ARTIFACT_VERSION_TO_DEPLOY}"
 
-                     } catch (Exception e) {
-                         echo "Failed to get latest tag: ${e.getMessage()}"
-                     }
-                 }
-             }
-         }*/
      }
  }
 
@@ -151,12 +153,31 @@
  //    String projectType = params.PROJECT_TYPE
      switch (projectType) {
          case 'Output-Master':
-             return ['cms-arc-casl-bet-output','cms-arc-casl-brochure-output','cms-arc-casl-dev-output','cms-arc-casl-ent-output','cms-arc-casl-entws-output','cms-arc-casl-intl-output','cms-arc-casl-kids-output','cms-arc-casl-loader-output','cms-arc-casl-music-output','cms-arc-casl-nick-i-output','cms-arc-casl-pluto-output','cms-arc-casl-style-i-output','cms-arc-casl-style-1-output','cms-arc-casl-style-2-output','cms-arc-casl-style-3-output','cms-arc-casl-style-4-output','cms-arc-casl-tools-output']
+             return ['cms-arc-casl-bet-output', 'cms-arc-casl-brochure-output', 'cms-arc-casl-dev-output', 'cms-arc-casl-ent-output', 'cms-arc-casl-entws-output', 'cms-arc-casl-intl-output', 'cms-arc-casl-kids-output', 'cms-arc-casl-loader-output', 'cms-arc-casl-music-output', 'cms-arc-casl-nick-i-output', 'cms-arc-casl-pluto-output', 'cms-arc-casl-style-i-output', 'cms-arc-casl-style-1-output', 'cms-arc-casl-style-2-output', 'cms-arc-casl-style-3-output', 'cms-arc-casl-style-4-output', 'cms-arc-casl-tools-output']
          case 'Solr-Worker':
-             return ['cms-arc-casl-solr-low','cms-arc-casl-solr-medium','cms-arc-casl-solr-high','cms-arc-casl-solr-lowest']
+             return ['cms-arc-casl-solr-low', 'cms-arc-casl-solr-medium', 'cms-arc-casl-solr-high', 'cms-arc-casl-solr-lowest']
          case 'Cv-Worker':
-             return ['cms-arc-casl-cv-below-low','cms-arc-casl-cv-low','cms-arc-casl-cv-medium','cms-arc-casl-cv-high','cms-arc-casl-cv-lowest']
+             return ['cms-arc-casl-cv-below-low', 'cms-arc-casl-cv-low', 'cms-arc-casl-cv-medium', 'cms-arc-casl-cv-high', 'cms-arc-casl-cv-lowest']
          case 'Osiris2':
-             return ['cms-arc-casl-epg-feeds','cms-casl-posting-internal']
-         default :
+             return ['cms-arc-casl-epg-feeds', 'cms-casl-posting-internal']
+         default:
              return ['No Server available']
+     }}
+
+ import com.cloudbees.plugins.credentials.CredentialsProvider
+ import com.cloudbees.plugins.credentials.common.StandardCredentials
+
+ def getCredentialsById(String credentialsId) {
+
+     def credentials = CredentialsProvider.lookupCredentials(
+             StandardCredentials.class,
+             Jenkins.instance,
+             null,
+             null
+     )
+
+     def selectedCredential = credentials.find { it.id == credentialsId }
+     if (!selectedCredential) {
+         error("Credential with ID '${credentialsId}' not found")
+     }
+     return selectedCredential}
